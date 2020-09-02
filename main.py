@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # fontion max()
 def max(num1, num2):
     if num1 >= num2:
@@ -99,7 +98,7 @@ def max_in_list(array):
         for j in array:
             if highest < j:
                 highest = j
-=======
+
 # fontion max()
 def max(num1, num2):
     if num1 >= num2:
@@ -200,5 +199,4 @@ def max_in_list(array):
         for j in array:
             if highest < j:
                 highest = j
->>>>>>> origin/master
     return highest
