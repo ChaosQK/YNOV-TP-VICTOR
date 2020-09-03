@@ -1,5 +1,7 @@
 import os
 import requests
+from bs4 import BeautifulSoup
+import zipfile
 
 os.chdir('./books')
 
@@ -83,4 +85,32 @@ def getTop10MostUsedWords():
     return most_used
 
 
-print(getTop10MostUsedWords())
+def getAllBookLinks():
+    links = []
+    results = requests.get("http://www.gutenberg.org/robot/harvest")
+    parser = BeautifulSoup(results.text)
+    for link in parser.find_all('a', href=True):
+        if str(link["href"]).startswith("http://") and not "-h" in str(link["href"]).rsplit("/", 1)[1]\
+                and str(link["href"]).rsplit("/", 1)[1].split(".")[1] == "zip":
+            links.append(link["href"])
+    return links
+
+def downloadAllBooks():
+    links = getAllBookLinks()
+    i = 0
+    for link in links:
+        result = requests.get(link, allow_redirects=True)
+        open("../dl_books/" + str(link).rsplit("/", 1)[1], "wb").write(result.content)
+        i += 1
+
+def unzipDownloadedBooks():
+    os.chdir("../dl_books")
+    for file in os.listdir():
+        with zipfile.ZipFile(file, "r") as zip_file:
+            zip_file.extractall("../books")
+    for file in os.listdir():
+        os.remove(file)
+    os.chdir('../books')
+    renameAllBooks()
+
+renameAllBooks()
