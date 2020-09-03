@@ -1,7 +1,7 @@
 import os
 import requests
 import json
-import sys
+import sys, time
 
 
 def getAPIHttpRequest(link):
@@ -18,10 +18,7 @@ def getLastPublicRepo():
 
 
 def getMostPopularRepo():
-    sys.stdout.write("Downloading : [                                                                                                    ]\r")
-    sys.stdout.flush()
-    # 66 chars
-    # 1000 elements - 10 elements = 1%
+    print("Downloading : [                                                                                                    ]", end="\r")
     j = 0
     for i in range(1, 11):
         json_item = getAPIHttpRequest("https://api.github.com/search/repositories?sort=stars&per_page=100&q=created:2020-01-01&page=" + str(i))["items"]
@@ -34,12 +31,13 @@ def getMostPopularRepo():
             if j % 10 == 1:
                 case = []
                 for k in range(1, 101):
-                    if k < j:
+                    if k < (j/10):
                         case.append("=")
                     else:
                         case.append(" ")
-                sys.stdout.write("Downloading : [" + "".join(case) + "]\r")
-                sys.stdout.flush()
+                print("Downloading : [" + "".join(case) + "]", end="\r")
+                time.sleep(0.5)
+    print("Download Complete !", end="\n")
 
 
 getMostPopularRepo()
